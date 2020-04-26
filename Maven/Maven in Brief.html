@@ -1,0 +1,218 @@
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <style>
+        pre code {
+            background-color: #eee;
+            display: block;
+            padding-left: 10px;
+            color: black;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            white-space: -moz-pre-wrap;
+            white-space: -pre-wrap;
+            white-space: -o-pre-wrap;
+            word-wrap: break-word;
+            line-height: 20px;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+
+        }
+
+        pre {
+            margin: 0px 0px;
+        }
+
+        code {
+            color: #4266EC;
+            padding: 2px 4px;
+            white-space: nowrap;
+            background-color: #f7f7f9;
+            border: 1px solid #e1e1e8;
+        }
+
+        a {
+            color: #2b6dad
+        }
+
+        h4 {
+            font-weight: bold;
+        }
+
+        <style>table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        td,
+        th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+            color: #34495E;
+        }
+
+        tr:nth-child(even) {
+            background-color: #dddddd;
+        }
+        p{
+            color: #34495E;
+        }
+        li{
+            color: #34495E;
+        }
+        h4{
+            color: #0BA3E5 ;
+        }
+    </style>
+
+<body>
+<div class="separator" style="clear: both; text-align: center;"><a href="https://1.bp.blogspot.com/-cinr7pOJO6E/Xo4COY08HOI/AAAAAAAAHEA/b4ENfRN0BPohOWhVGl_adIKTELq3knX4QCLcBGAsYHQ/s1600/maven%2Bicon.JPG" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://1.bp.blogspot.com/-cinr7pOJO6E/Xo4COY08HOI/AAAAAAAAHEA/b4ENfRN0BPohOWhVGl_adIKTELq3knX4QCLcBGAsYHQ/s200/maven%2Bicon.JPG" width="200" height="97" data-original-width="231" data-original-height="112" /></a></div>
+    <div class="w3-panel w3-flat-turquoise">
+        <h4>What is Maven</h4>
+        <p>Apache Maven is a software project management and comprehension tool. Based on the concept of a project
+            object model (POM), Maven can manage a project's build, reporting and documentation from a central piece of
+            information.</p>
+        <p>Below are features provided by maven:</p>
+        <ul>
+            <li>Build Automation Tool</li>
+            <li>Dependency Management Tool</li>
+            <li>Project Management Tool</li>
+            <li>Standard approach to building software</li>
+            <li>Command line tool</li>
+            <li>IDE Integration</li>
+            <li>Managed by Apache Software Foundation</li>
+        </ul>
+
+        <h4>Terminologies</h4>
+        <ul>
+            <li><b>POM(Project Object Model)</b></li>
+            <ul>
+                <li>POM is an XML file, and this file really describes the configuration and the customization for our
+                    project. So it's going to spell out the different plugins, different dependencies and different
+                    profiles that we use to construct our project.</li>
+                <li>Within this POM, minimal requirement is to have GAV parameters. Maven uses a coordinate system,
+                    where you specify GAV - group ID, artifact ID and version number.</li>
+            </ul>
+
+            <li><b>Repositories</b></li>
+            <ul>
+                <li>where all the built artifacts and dependencies stored.</li>
+                <li>There are 2 types of repo. - local(cache) and remote.
+                    <ul>
+                        <li>Local repository take precedence for dependencies to download.</li>
+                        <li>Local repo created as hidden .m2 directory in home dir. of userid</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <li><b>Lifecycle and Phase</b></li>
+            <ul>
+                <li>When maven runs the build process it goes through it build lifecyle. There is clearly defined
+                    process of building and distributing the artifact.</li>
+                <li>There are 3 build lifecycles: <code>default</code>, <code>clean</code> and <code>site</code></li>
+                <ul>
+                    <li><code>default</code> - Handles project management. This is majorly used lifecycle.</li>
+                    <li><code>clean</code> - Handles project cleaning.</li>
+                    <li><code>site</code> - Create project site documentation.</li>
+                </ul>
+                <li><b>Lifecycle consists of Phases. Phase is a stage in the lifecycle through which build go
+                        through.</b></li>
+                <li><b>Phases of <code>default</code> lifecycle</b> For the complete list of default lifecycle phases
+                    please refer <a
+                        href="https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html#Lifecycle_Reference"
+                        target="_blank">this link</a></li>
+                <ul>
+                    <li><code>validate</code> - Validates the project if contains all necessary information</li>
+                    <li><code>compile</code> - Compile the source code</li>
+                    <li><code>test</code> - Test the source code using unit test cases written under
+                        <code>src/test/</code> directory</li>
+                    <li><code>package</code> - Create package containing with all compiled code ex. jar, war which
+                        contains classes of java</li>
+                    <li><code>verify</code> - Runs integration checks ex. source code is written according to predefined
+                        checkstyle</li>
+                    <li><code>install</code> - Install the package to local repository, means copy the package from
+                        target directory to <code>~/.m2/repository/groupID/artifactID/versionNumber/</code>directory
+                    </li>
+                    <li><code>deploy</code> - Upload the artifact to remote repository</li>
+                </ul>
+                <li><b>When any phase is getting executed in lifecycle, maven execute all precedence phases.</b></li>
+                <ul>
+                    <li>Ex. when we run <code>mvn package</code> maven will run all phases
+                        <code>validate, compile, test</code>before "package" in order</li>
+                </ul>
+            </ul>
+
+            <li><b>Plugins and Goals</b></li>
+            <ul>
+                <li><b>Individual build phase is made up of Plugin</b></li>
+                <li><b>Plugin is a collection of goals with default goal attached to it.</b></li>
+                <li><b>Ex. when we run <code>mvn package</code> maven default run plugin <code>jar</code> which has
+                        default goal <code>jar</code></b></li>
+                <li>Plugin and Goal are described as <code>plugin:goal</code> ex. <code>jar:jar</code></li>
+                <li>Goal performs the actual action in build process.</li>
+                <li>Few example of default lifecycle phase and their default plugin and goal</li>
+                <table>
+                    <tr>
+                        <th>Default Lifecycle Phase</th>
+                        <th>Default Plugin:Goal</th>
+                    </tr>
+                    <tr>
+                        <td><code>compile</code></td>
+                        <td><code>compiler:compile</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>test</code></td>
+                        <td><code>surefire:test</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>package</code></td>
+                        <td><code>jar:jar</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>install</code></td>
+                        <td><code>install:install</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>deploy</code></td>
+                        <td><code>deploy:deploy</code></td>
+                    </tr>
+                </table>
+            </ul>
+
+            <li><b>How to configure Plugins and Goals</b></li>
+            <ul>
+                <li>A Plugin contains default and other goals. Ex. <code>compiler</code> plugin contains 2 goals: <code>compile</code> and <code>testCompile</code></li>
+                <li>Plugin and Goal can be configured within POM.xml and command line.</li>
+                <li>Using POM.xml</li>
+                <pre>
+                    <code>
+&lt;plugin&gt;
+   &lt;groupId&gt;com.mycompany.example&lt;/groupId&gt;
+   &lt;artifactId&gt;display-maven-plugin&lt;/artifactId&gt;
+   &lt;version&gt;1.0&lt;/version&gt;
+   &lt;executions&gt;
+     &lt;execution&gt;
+       &lt;phase&gt;process-test-resources&lt;/phase&gt;
+       &lt;goals&gt;
+         &lt;goal&gt;time&lt;/goal&gt;
+       &lt;/goals&gt;
+     &lt;/execution&gt;
+   &lt;/executions&gt;
+ &lt;/plugin&gt;
+                    </code>
+                </pre>
+                <li>Using Command line</li>
+                <ul>
+                    <li><code>mvn help:effective-pom</code> Here help is plugin and effective-pom is goal.</li>
+                    <li>This command would return super pom.xml file details.</li>
+                </ul>
+            </ul>
+        </ul>
+    </div>
+</body> 
+</head>
+
+</html>

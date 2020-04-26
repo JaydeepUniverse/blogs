@@ -1,0 +1,269 @@
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <style>
+        pre code {
+            background-color: #eee;
+            display: block;
+            padding-left: 10px;
+            color: black;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            white-space: -moz-pre-wrap;
+            white-space: -pre-wrap;
+            white-space: -o-pre-wrap;
+            word-wrap: break-word;
+            line-height: 20px;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+
+        }
+
+        pre {
+            margin: 0px 0px;
+        }
+
+        code {
+            color: #4266EC;
+            padding: 2px 4px;
+            white-space: nowrap;
+            background-color: #f7f7f9;
+            border: 1px solid #e1e1e8;
+        }
+
+        a {
+            color: #2b6dad
+        }
+
+        h4 {
+            font-weight: bold;
+        }
+
+        <style>table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        td,
+        th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+            color: #34495E;
+        }
+
+        tr:nth-child(even) {
+            background-color: #dddddd;
+        }
+
+        p {
+            color: #34495E;
+        }
+
+        li {
+            color: #34495E;
+        }
+
+        h4 {
+            color: #0BA3E5;
+        }
+
+        ul.a {
+            list-style-type: disc;
+        }
+
+        ul.b {
+            list-style-type: circle;
+        }
+
+        ul.c {
+            list-style-type: square;
+        }
+
+    </style>
+
+<body>
+<div class="separator" style="clear: both; text-align: center;"><a href="https://1.bp.blogspot.com/-Vq_PPsB_a40/XqQ9z5OFSJI/AAAAAAAAHXA/HNESQ8YT1VMjoE_W8z5pLVE4n73d_rigwCLcBGAsYHQ/s1600/docker.JPG" imageanchor="1" style="clear: left; float: left; margin-bottom: 1em; margin-right: 1em;"><img border="0" src="https://1.bp.blogspot.com/-Vq_PPsB_a40/XqQ9z5OFSJI/AAAAAAAAHXA/HNESQ8YT1VMjoE_W8z5pLVE4n73d_rigwCLcBGAsYHQ/s200/docker.JPG" width="200" height="195" data-original-width="117" data-original-height="114" /></a></div>
+    <div class="w3-panel w3-flat-turquoise">
+        <h4>Docker Hub Registry</h4>
+        <p>Docker is a platform for developers and sysadmins to build, run, and share applications with containers. The
+            use of containers to deploy applications is called containerization.</p>
+
+        <h4>Containerization is increasingly popular because containers are:</h4>
+        <ul class="a">
+            <li><b>Flexible:</b> Even the most complex applications can be containerized.</li>
+            <li><b>Lightweight:</b> Containers leverage and share the host kernel, making them much more efficient in
+                terms of system resources than virtual machines.</li>
+            <li><b>Portable:</b> You can build locally, deploy to the cloud, and run anywhere.</li>
+            <li><b>Loosely coupled:</b> Containers are highly self sufficient and encapsulated, allowing you to replace
+                or upgrade one without disrupting others.</li>
+            <li><b>Scalable:</b> You can increase and automatically distribute container replicas across a datacenter.
+            </li>
+            <li><b>Secure:</b> Containers apply aggressive constraints and isolations to processes without any
+                configuration required on the part of the user.</li>
+        </ul>
+
+        <h4>Images & Containers</h4>
+        <ul class="a">
+            <li>Fundamentally, a container is nothing but a running process, with some added encapsulation features
+                applied to it in order to keep it isolated from the host and from other containers. One of the most
+                important aspects of container isolation is that each container interacts with its own private
+                filesystem; this filesystem is provided by a Docker image.</li>
+            <li>An image includes everything needed to run an application - the code or binary, runtimes, dependencies,
+                and any other filesystem objects required.</li>
+        </ul>
+
+        <h4>Containerization vs Virtualization</h4>
+        <div class="separator" style="clear: both; text-align: center;"><a
+                href="https://4.bp.blogspot.com/-pQHXv-xN0-4/XqOv4jVZpJI/AAAAAAAAHVg/hXBXqL2hntMitZYlYv2bcRDeYtBPvn58wCLcBGAsYHQ/s1600/containerizationVsVirtualization.JPG"
+                imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0"
+                    src="https://4.bp.blogspot.com/-pQHXv-xN0-4/XqOv4jVZpJI/AAAAAAAAHVg/hXBXqL2hntMitZYlYv2bcRDeYtBPvn58wCLcBGAsYHQ/s640/containerizationVsVirtualization.JPG"
+                    width="640" height="279" data-original-width="792" data-original-height="345" /></a></div>
+        <table>
+            <tr>
+                <th>Containerization</th>
+                <th>Virtualization</th>
+            </tr>
+            <tr>
+                <td>Containerization is a lightweight alternative of full virtual machine which includes application and
+                    its own operating environment.</td>
+                <td>Virtualization is a copy of complete server basically, which has its own OS, drivers, kernel
+                    features and resources.</td>
+            </tr>
+            <tr>
+                <td>Runs on OS</td>
+                <td>Runs on Hypervisor which creates different VMs on it.</td>
+            </tr>
+            <tr>
+                <td>Provides virual isolation of applications but doesn't provide strong default security boundries
+                    between containers.(can be configured separately)</td>
+                <td>Complete isolation between VMs which supports strong security of hosted applications on separate
+                    VMs.</td>
+            </tr>
+            <tr>
+                <td>Real time provisioning and Scalability</td>
+                <td>Compared to slow provisioning </td>
+            </tr>
+            <tr>
+                <td>Operating system level virtualization</td>
+                <td>Hardware level virtualization</code></td>
+            </tr>
+        </table>
+        <p></p>
+        <h4>Docker Engine & Architecture</h4>
+        <div class="separator" style="clear: both; text-align: center;"><a
+                href="https://2.bp.blogspot.com/-npYJSZ_-Vug/XqOyVxsm8kI/AAAAAAAAHVs/M5sPBTpOC5YQHca717oJZwYxK_t5bCgJACLcBGAsYHQ/s1600/dockerEngine.jpg"
+                imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0"
+                    src="https://2.bp.blogspot.com/-npYJSZ_-Vug/XqOyVxsm8kI/AAAAAAAAHVs/M5sPBTpOC5YQHca717oJZwYxK_t5bCgJACLcBGAsYHQ/s640/dockerEngine.jpg"
+                    width="640" height="446" data-original-width="873" data-original-height="609" /></a></div>
+        <p>Docker Engine is a client-server application with these major components:</p>
+        <ul class="a">
+            <li>A server which is a type of long-running program called a daemon process (the dockerd command).</li>
+            <li>A REST API which specifies interfaces that programs can use to talk to the daemon and instruct it what
+                to do.</li>
+            <li>A command line interface (CLI) client (the docker command).</li>
+        </ul>
+
+        <p>Docker uses a client-server architecture. The Docker client talks to the Docker daemon, which does the heavy
+            lifting of building, running, and distributing your Docker containers. The Docker client and daemon can run
+            on the same system, or you can connect a Docker client to a remote Docker daemon.</p>
+
+        <h4>The Docker daemon</h4>
+        <p>The Docker daemon (dockerd) listens for Docker API requests and manages Docker objects such as images,
+            containers, networks, and volumes. A daemon can also communicate with other daemons to manage Docker
+            services.</p>
+
+        <h4>The Docker client</h4>
+        <p>The Docker client (docker) is the primary way that many Docker users interact with Docker. When you use
+            commands such as docker run, the client sends these commands to dockerd, which carries them out. The docker
+            command uses the Docker API. The Docker client can communicate with more than one daemon.</p>
+
+        <h4>Docker registries</h4>
+        <p>A Docker registry stores Docker images. Docker Hub is a public registry that anyone can use, and Docker is
+            configured to look for images on Docker Hub by default. You can even run your own private registry. If you
+            use Docker Datacenter (DDC), it includes Docker Trusted Registry (DTR).</p>
+
+        <p>When you use the docker pull or docker run commands, the required images are pulled from your configured
+            registry. When you use the docker push command, your image is pushed to your configured registry.</p>
+
+        <h4>Docker Concepts</h4>
+        <p><b>The underlying technology</b></p>
+        <ul class="a">
+            <li>Docker is written in Go and takes advantage of several features of the Linux kernel to deliver its
+                functionality:</li>
+            <li>Namespaces</li>
+            <ul class="b">
+                <li>Provided isolated workspace which is known as container</li>
+                <li>Docker engine uses below namespaces</li>
+                <ul class="c">
+                    <li>The pid namespace: Process isolation (PID: Process ID)</li>
+                    <li>The net namespace: Managing network interfaces (NET: Networking)</li>
+                    <li>The ipc namespace: Managing access to IPC resources (IPC: InterProcess Communication)</li>
+                    <li>The mnt namespace: Managing filesystem mount points (MNT: Mount)</li>
+                    <li>The uts namespace: Isolating kernel and version identifiers. (UTS: Unix Timesharing System)</li>
+                </ul>
+            </ul>
+            <li>Control Groups</li>
+            <ul class="b">
+                <li>Use to share, limit the usage hardware resources to containers</li>
+            </ul>
+            <li>Union FS</li>
+            <ul class="b">
+                <li>Help to create layers for containers which are building block for containers</li>
+            </ul>
+            <li>Container Format</li>
+            <ul class="b">
+                <li>Docker engine combines these all into wrapper called container format. Default container format is
+                    libcontainer</li>
+            </ul>
+        </ul>
+
+        <h4>Docker Installation</h4>
+        <p>Installation for all platform is described in this parent link - <a
+                href="https://docs.docker.com/engine/install/"
+                target="_blank">https://docs.docker.com/engine/install/</a></p>
+
+        <h4>Docker Basic Commands</h4>
+        <p><a href="https://github.com/docker/labs/blob/master/beginner/chapters/setup.md"
+                target="_blank">https://github.com/docker/labs/blob/master/beginner/chapters/setup.md</a></p>
+        <p><a href="https://github.com/docker/labs/blob/master/beginner/chapters/alpine.md"
+                target="_blank">https://github.com/docker/labs/blob/master/beginner/chapters/alpine.md</a></p>
+        <p>Run a static website inside a container<a
+                href="https://github.com/docker/labs/blob/master/beginner/chapters/webapps.md"
+                target="_blank">https://github.com/docker/labs/blob/master/beginner/chapters/webapps.md</a></p>
+
+        <h4>Create Docker Image</h4>
+        <p>Docker can build images automatically by reading the instructions from a Dockerfile. A Dockerfile is a text
+            document that contains all the commands a user could call on the command line to assemble an image.</p>
+        <p>Using docker build users can create an automated build that executes several command-line instructions in
+            succession.</p>
+
+        <h4>Dockerfile commands:</h4>
+        <p><code>FROM</code> – sets the base image</p>
+        <p><code>RUN</code> – execute any command as a new layer on top of base image and commit results</p>
+        <p><code>EXPOSE</code> – container will listen on this exposed port</p>
+        <p><code>ENV</code> – sets environment variable</p>
+        <p><code>COPY</code> – copy the files from docker host to docker container</p>
+        <p><code>CMD</code> – provides executable command in order to run container</p>
+        <p><code>ENTRYPOINT</code> - work same as CMD but provides option to add arguments while running the container
+        </p>
+        <p><code>VOLUME</code> – create the mount point in container to hold external mounted volumes from localhost or
+            other type of volumes</p>
+        <p><code>USER</code> – run the docker image by this username or userid</p>
+        <p><code>WORKDIR</code> – sets the work directory for the commands RUN, COPY, CMD, ENTRYPOINT, ADD</p>
+
+        <p>Full reference of dockerfile command can be found at <a
+                href="https://docs.docker.com/engine/reference/builder/"
+                target="_blank">https://docs.docker.com/engine/reference/builder/</a></p>
+
+        <p>Ex. Create docker image and run the container <a
+                href="https://github.com/docker/labs/blob/master/beginner/chapters/webapps.md#23-create-your-first-image"
+                target="_blank">https://github.com/docker/labs/blob/master/beginner/chapters/webapps.md#23-create-your-first-image</a>
+        </p>
+    </div>
+</body>
+</head>
+
+</html>

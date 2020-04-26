@@ -1,0 +1,170 @@
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <style>
+        pre code {
+            background-color: #eee;
+            display: block;
+            padding-left: 10px;
+            color: black;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            white-space: -moz-pre-wrap;
+            white-space: -pre-wrap;
+            white-space: -o-pre-wrap;
+            word-wrap: break-word;
+            line-height: 20px;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+
+        }
+
+        pre {
+            margin: 0px 0px;
+        }
+
+        code {
+            color: #4266EC;
+            padding: 2px 4px;
+            white-space: nowrap;
+            background-color: #f7f7f9;
+            border: 1px solid #e1e1e8;
+        }
+
+        a {
+            color: #2b6dad
+        }
+
+        h4 {
+            font-weight: bold;
+        }
+
+        <style>table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        td,
+        th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+            color: #34495E;
+        }
+
+        tr:nth-child(even) {
+            background-color: #dddddd;
+        }
+
+        p {
+            color: #34495E;
+        }
+
+        li {
+            color: #34495E;
+        }
+
+        h4 {
+            color: #0BA3E5;
+        }
+
+        ul.a {
+            list-style-type: disc;
+        }
+
+        ul.b {
+            list-style-type: circle;
+        }
+
+        ul.c {
+            list-style-type: square;
+        }
+
+    </style>
+
+<body>
+<div class="separator" style="clear: both; text-align: center;"><a href="https://4.bp.blogspot.com/-Vq_PPsB_a40/XqQ9z5OFSJI/AAAAAAAAHXE/WiDvUMLmz0kk2licewJWS0BvvcfnqtpjACPcBGAYYCw/s1600/docker.JPG" imageanchor="1" style="clear: left; float: left; margin-bottom: 1em; margin-right: 1em;"><img border="0" src="https://4.bp.blogspot.com/-Vq_PPsB_a40/XqQ9z5OFSJI/AAAAAAAAHXE/WiDvUMLmz0kk2licewJWS0BvvcfnqtpjACPcBGAYYCw/s200/docker.JPG" width="200" height="195" data-original-width="117" data-original-height="114" /></a></div>
+    <div class="w3-panel w3-flat-turquoise">
+
+        <h4>Docker Hub Registry</h4>
+        <ul class="a">
+            <li><code>sudo docker login</code> - To login into default docker registry <a href="https://hub.docker.com/">https://hub.docker.com/</a></li>
+            <p></p>
+            <li><code>sudo docker login registryURL</code> - To login into private registry</li>
+            <p></p>
+            <li><code>sudo docker push repoName/imageName:tag</code> - Push image to registry in given repoName=respository name, as imageName with tag=ex. 1.0.0</li>
+            <p></p>
+            <li><code>sudo docker pull repoName/imageName:tag</code> - Pulgl docker image</li>
+            <p></p>
+            <li><code>sudo docker tag existingRepoName/imageName:tag newRepoName/imageName:tag</code> - Create new tagged image</li>
+        </ul>
+        <p></p>
+        <h4>Interacting with Container</h4>
+        <ul class="a">
+            <li><code>sudo docker run -it imageName</code> – -i means interactive, -t means provide terminal</li>
+            <p></p>
+            <li><code>sudo docker run -d imageName</code> - -d means run in background mode</li>
+            <p></p>
+            <li><code>sudo docker cp [OPTIONS] CONTAINER:SRC_PATH DEST_PATH|-</code></li>
+            <p></p>
+            <li><code>sudo docker cp [OPTIONS] SRC_PATH|- CONTAINER:DEST_PATH</code> - copy from host to container, viceversa possible</li>
+            <p></p>
+            <li><code>sudo docker exec containerName/ID command</code> - run a command in existing container, giving output on localhost terminal</li>
+            <p></p>
+            <li><code>sudo docker exec -it containerName/ID /bin/bash</code> - use to go inside container</li>
+            <p></p>
+            <li><code>sudo docker ps</code> – list running containers</li>
+            <p></p>
+            <li><code>sudo docker ps -a</code> – list all containers</li>
+            <p></p>
+            <li><code>sudo docker start containerName/ID</code> – start the stopped container</li>
+            <p></p>
+            <li><code>sudo docker stop containerName/ID</code> – stop the running container</li>
+            <p></p>
+            <li><code>sudo docker rm containerName/ID</code> – remove the container process</li>
+            <p></p>
+            <li><code>sudo docker rm $(sudo docker ps -aq)</code> – remove all exited container process</li>
+            <p></p>
+            <li><code>sudo docker inspect containerName/ID</code> – show information about container in json format</li>
+            <p></p>
+            <li><code>sudo docker logs containerName/ID</code> – Fetch the logs from container, argument -f will show live logs</li>
+            <p></p>
+            <li><code>sudo docker stats containerName/ID</code> – show live usage of resources by container (can be run with multiple container in the same command line)</li>
+            <p></p>
+            <li><code>sudo docker top containerName/ID</code> – show running process in container</li>
+        </ul>
+        <p></p>
+        <h4>Docker Image Management Commands</h4>
+        <ul class="a">
+            <li><code>sudo docker build -t repoName/imageName .</code> – Create docker image</li>
+            <p></p>
+            <li><code>sudo docker images</code> – list the image</li>
+            <p></p>
+            <li><code>sudo docker history imageName</code> – show the image history</li>
+            <p></p>
+            <li><code>sudo docker inspect imageName</code> – show docker image information in json format</li>
+            <p></p>
+            <li><code>sudo docker tag imageName1 imageName2</code> – tag the image</li>
+            <p></p>
+            <li><code>sudo docker rmi imageName</code> – remove the image</li>
+            <p></p>
+            <li><code>sudo docker pull repoName/imageName</code> – pull the docker image from registry</li>
+            <p></p>
+            <li><code>sudo docker push repoName/imagename</code> – push the docker image to registry</li>
+            <p></p>
+            <li><code>sudo docker save imageName -o imageName.tar.gz</code> – save the image as tar ball</li>
+            <p></p>
+            <li><code>sudo docker load --input tarFileName.tar.gz</code> – load the image from tar ball as docker image</li>
+        </ul>
+        <p></p>
+        <h4>Other Commands</h4>
+        <ul class="a">
+            <li><code>sudo docker info</code> – display the system-wide information about docker</li>
+        </ul>
+    </div>
+</body>
+</head>
+
+</html>

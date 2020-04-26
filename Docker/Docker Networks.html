@@ -1,0 +1,251 @@
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <style>
+        pre code {
+            background-color: #eee;
+            display: block;
+            padding-left: 10px;
+            color: black;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            white-space: -moz-pre-wrap;
+            white-space: -pre-wrap;
+            white-space: -o-pre-wrap;
+            word-wrap: break-word;
+            line-height: 20px;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+
+        }
+
+        pre {
+            margin: 0px 0px;
+        }
+
+        code {
+            color: #4266EC;
+            padding: 2px 4px;
+            white-space: nowrap;
+            background-color: #f7f7f9;
+            border: 1px solid #e1e1e8;
+            white-space: pre-wrap;
+            white-space: -moz-pre-wrap;
+            white-space: -pre-wrap;
+            white-space: -o-pre-wrap;
+            word-wrap: break-word;
+        }
+
+        a {
+            color: #2b6dad
+        }
+
+        h4 {
+            font-weight: bold;
+        }
+
+        <style>table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        td,
+        th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+            color: #34495E;
+        }
+
+        tr:nth-child(even) {
+            background-color: #dddddd;
+        }
+
+        p {
+            color: #34495E;
+        }
+
+        li {
+            color: #34495E;
+        }
+
+        h4 {
+            color: #0BA3E5;
+        }
+
+        ul.a {
+            list-style-type: disc;
+        }
+
+        ul.b {
+            list-style-type: circle;
+        }
+
+        ul.c {
+            list-style-type: square;
+        }
+    </style>
+
+<body>
+    <div class="w3-panel w3-flat-turquoise">
+        <h4>Docker Networks</h4>
+
+        <p>One of the reasons Docker containers and services are so powerful is that you can connect them together, or
+            connect them to non-Docker workloads.</p>
+        <p>Docker’s networking subsystem is pluggable, using drivers. Several drivers exist by default, and provide core
+            networking functionality:</p>
+
+        <ul class="a">
+            <li><b>Bridge:</b> The default network driver. If you don’t specify a driver, this is the type of network
+                you are creating. Bridge networks are usually used when your applications run in standalone containers
+                that need to communicate.</li>
+            <li><b>Host:</b> For standalone containers, remove network isolation between the container and the Docker
+                host, and use the host’s networking directly. host is only available for swarm services on Docker 17.06
+                and higher. See use the host network.</li>
+            <li><b>Overlay:</b> Overlay networks connect multiple Docker daemons together and enable swarm services to
+                communicate with each other.</li>
+
+        </ul>
+        <p></p>
+        <h4>1. Bridge Network</h4>
+<div class="separator" style="clear: both; text-align: center;"><a href="https://4.bp.blogspot.com/-m7Dc4zPKY5Q/XqQ6Zv_v6bI/AAAAAAAAHWk/ufMqeN2Bb_Q__0bvPyM_mq1YxF6BOZpKgCLcBGAsYHQ/s1600/dockerBridgeNetwork.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://4.bp.blogspot.com/-m7Dc4zPKY5Q/XqQ6Zv_v6bI/AAAAAAAAHWk/ufMqeN2Bb_Q__0bvPyM_mq1YxF6BOZpKgCLcBGAsYHQ/s640/dockerBridgeNetwork.png" width="640" height="398" data-original-width="720" data-original-height="448" /></a></div>
+        <p>There are 2 types of bridge networks: </p>
+        <ul class="a">
+            <li><b>Default bridge network:</b> All containers without a --network specified, are attached to the default
+                bridge network. This can be a risk, as unrelated stacks/services/containers are then able to
+                communicate.</li>
+            <li><b>User defined bridge networks:</b> Using a user-defined network provides a scoped network in which
+                only containers attached to that network are able to communicate.</li>
+        </ul>
+        <p>Containers can be attached and detached from user-defined networks on the fly.</p>
+        <p>One containers can be part of multiple bridge networks.</p>
+        <p>Commands with use-case</p>
+        <ul class="a">
+            <li>Create 2 containers, inspect them > networking part where it would have mentioned “bridge” which is
+                default network, ping from 1 container to another to check connectivity</li>
+            <p></p>
+            <li><code>docker network create my-net</code> – Create new user defined bridge network</li>
+            <p></p>
+            <li><code>docker inspect my-net</code></li>
+            <p></p>
+            <li><code>docker network connect my-net containerName/ID</code> – connect container to new network</li>
+            <p></p>
+            <li><code>docker inspect containerName/ID</code> – to verify new network details</li>
+            <p></p>
+            <li>Go inside this container, check connectivity again with another container which should work as this
+                container would be still part of existing default bridge network</li>
+            <p></p>
+            <li><code>docker network disconnect bridge containerName/ID</code> – disconnect container from default
+                bridge network</li>
+            <p></p>
+            <li>Go inside this container, check connectivity again with another container which will not work now
+                because both containers are part of different bridge networks</li>
+            <p></p>
+            <li><code>docker create --network my-net imageName</code> – --network will create container as part of user
+                defined network</li>
+            <p></p>
+            <li><code>docker network rm my-net</code></li>
+        </ul>
+        <p></p>
+        <h4>2. Host Network</h4>
+<div class="separator" style="clear: both; text-align: center;"><a href="https://2.bp.blogspot.com/-3MABz5v_0b4/XqQ9LQ2-eUI/AAAAAAAAHWw/ylfIBkoh_2gMYBwW1DFl7b_0rd1ncCKIwCLcBGAsYHQ/s1600/dockerHostNetwork.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://2.bp.blogspot.com/-3MABz5v_0b4/XqQ9LQ2-eUI/AAAAAAAAHWw/ylfIBkoh_2gMYBwW1DFl7b_0rd1ncCKIwCLcBGAsYHQ/s640/dockerHostNetwork.png" width="523" height="640" data-original-width="300" data-original-height="367" /></a></div>
+        <p>If you use the host network mode for a container, that container’s network stack is not isolated from the
+            Docker host (the container shares the host’s networking namespace), and the container does not get its own
+            IP-address allocated. For instance, if you run a container which binds to port 80 and you use host
+            networking, the container’s application is available on port 80 on the host’s IP address.</p>
+        <p>Commands with use-case</p>
+        <ul class="a">
+            <li><code>docker run -d --network host --name my_nginx nginx</code> – Create container using network type
+                host for nginx image</li>
+            <p></p>
+            <li><code>docker ps</code> – verify the container, no any port mapping</li>
+            <p></p>
+            <li>Verify the nginx UI from dockerhost:80</li>
+            <p></p>
+            <li><code>docker inspect containerName/ID</code> – Inspect the network part where it would showing “Host”
+                networking with no any IP address</li>
+            <p></p>
+            <li><code>ifconfig</code> – docker host ip address eth0</li>
+            <p></p>
+            <li><code>docker exec -it containerName/ID /bin/bash</code></li>
+            <p></p>
+            <ul class="b">
+                <li><code>hostname -i</code> – verify the same ip address as docker host</li>
+                <p></p>
+            </ul>
+            <li><code>netstat -tulpn | grep :80</code> – check the attached process which would be container’s nginx
+            </li>
+        </ul>
+        <p></p>
+        <h4>3. Overlay Network</h4>
+<div class="separator" style="clear: both; text-align: center;"><a href="https://1.bp.blogspot.com/-_3Hr9ajOFT0/XqQ9QrollJI/AAAAAAAAHW0/eLbWNSAFnwAdY-DZ-DZvOOjJN6eFMiECACLcBGAsYHQ/s1600/dockerOverlayNetwork.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://1.bp.blogspot.com/-_3Hr9ajOFT0/XqQ9QrollJI/AAAAAAAAHW0/eLbWNSAFnwAdY-DZ-DZvOOjJN6eFMiECACLcBGAsYHQ/s640/dockerOverlayNetwork.png" width="640" height="360" data-original-width="720" data-original-height="405" /></a></div>
+        <p>The overlay network driver creates a distributed network among multiple Docker daemon hosts. This network
+            sits on top of (overlays) the host-specific networks, allowing containers connected to it to communicate
+            securely when encryption is enabled.</p>
+        <p>In order to create overlay network, we need to create docker swarm cluster.</p>
+        <p><b>Commands to create Docker swarm cluster</b></p>
+        <ul class="a">
+            <li>Keep open 2 SSH terminals – one for docker manager and another for docker worker node (Make sure these 2
+                nodes should be connected with each other with ping and open ports TCP port 2377, TCP and UDP port 7946
+                and UDP port 4789)</li>
+            <p></p>
+            <li>On manager initialize the swarm.<br><code>docker swarm init</code><br>Make a note of the text that is
+                printed, as this contains the token that you will use to join worker node to the swarm.</li>
+            <p></p>
+            <li>On worker node, join the
+                swarm.<br><code>docker swarm join --token &lt;TOKEN&gt; --advertise-addr &lt;IP-ADDRESS-OF-WORKER-1&gt; &lt;IP-ADDRESS-OF-MANAGER&gt;:2377</code>
+                <p></p>
+            </li>
+            <li>On manager, list all the nodes<br>docker node ls</li>
+            <p></p>
+        </ul>
+        <p><b>Commands for Overlay Network with use-case</b></p>
+        <ul class="a">
+            <li>Keep open 2 SSH terminals – one for docker manager and another for docker worker node</li>
+            <li><u>Example 1</u></li>
+            <p></p>
+            <ul class="b">
+                <li>On manager node <br><code>docker network create --driver=overlay --attachable test-net</code>
+                    <p></p>
+                    <code>docker inspect network test-net</code><code>docker run -it --name alpine1 --network test-net alpine</code>
+                </li>
+                <p></p>
+                <li>On worker node<br><code>docker run -dit --name alpine2 --network test-net alpine</code>
+                    <p></p><code>docker network ls</code> - verify that test-net was created (and has the same NETWORK
+                    ID as test-net on host1)</li>
+                    <p></p>
+                <li>From manager node<br><code>ping -c 2 alpine2</code> - The two containers communicate with the
+                    overlay network connecting the two hosts.</li>
+            </ul>
+            <p></p>
+            <li><u>Example 2</u></li>
+            <p></p>
+            <ul class="b">
+                <li>
+                    <code>docker network create -d overlay nginx-net</code>
+                    <p></p>
+                    <code>docker inspect network nginx-net</code>
+                    <p></p>
+                    <code>docker service create --name my-nginx --publish target=80,published=80 --replicas=5 --network nginx-net nginx</code>
+                    <p></p>
+                    <code>docker service ls</code>
+                    <p></p>
+                    <code>docker ps</code>
+                    <p></p>
+                </li>
+                <li>
+                    <code>docker ps</code>
+                    <p></p>
+                    <code>docker network ls</code> - Verify the same network as created in manager node
+                </li>
+                <p></p>
+                <li>Check UI of nginx web server using any of manager or worker node Public IP, that should respond nginx welcome page</li>
+            </ul>
+        </ul>
+    </div>
+</body>
+</head>
+
+</html>
