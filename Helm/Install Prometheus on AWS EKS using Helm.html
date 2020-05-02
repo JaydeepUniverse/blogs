@@ -1,0 +1,191 @@
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <style>
+        pre code {
+            background-color: #eee;
+            display: block;
+            padding-left: 10px;
+            color: #34495E;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            white-space: -moz-pre-wrap;
+            white-space: -pre-wrap;
+            white-space: -o-pre-wrap;
+            word-wrap: break-word;
+            line-height: 20px;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+
+        }
+
+        pre {
+            margin: 0px 0px;
+        }
+
+        code {
+            color: #4266EC;
+            padding: 2px 4px;
+            white-space: nowrap;
+            background-color: #f7f7f9;
+            border: 1px solid #e1e1e8;
+            white-space: pre-wrap;
+            white-space: -moz-pre-wrap;
+            white-space: -pre-wrap;
+            white-space: -o-pre-wrap;
+            word-wrap: break-word;
+        }
+
+        a {
+            color: #2b6dad
+        }
+
+        h4 {
+            font-weight: bold;
+        }
+
+        <style>table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        td,
+        th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+            color: #34495E;
+        }
+
+        tr:nth-child(even) {
+            background-color: #dddddd;
+        }
+
+        p {
+            color: #34495E;
+        }
+
+        li {
+            color: #34495E;
+        }
+
+        h4 {
+            color: #0BA3E5;
+        }
+    </style>
+
+<body>
+<div class="separator" style="clear: both; text-align: center;"><a href="https://1.bp.blogspot.com/-f3jO4lGIkHI/XqukoO5GsTI/AAAAAAAAHcQ/2QSo5xY83L0P_C0oB3rrrYUoudmE3VuSgCLcBGAsYHQ/s1600/Install%2BPrometheus%2Bon%2BAWS%2BEKS%2Busing%2BHelm.JPG" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://1.bp.blogspot.com/-f3jO4lGIkHI/XqukoO5GsTI/AAAAAAAAHcQ/2QSo5xY83L0P_C0oB3rrrYUoudmE3VuSgCLcBGAsYHQ/s400/Install%2BPrometheus%2Bon%2BAWS%2BEKS%2Busing%2BHelm.JPG" width="400" height="329" data-original-width="481" data-original-height="396" /></a></div>
+    <div class="w3-panel w3-flat-turquoise">
+        <ul>
+            <li>
+                <b>Create Namespace for Prometheus</b>
+                <p></p>
+                <pre>
+                    <code>
+kubectl create ns prometheus
+                    </code>
+                </pre>
+            </li>
+            <li>
+                <p><b>Persistent Storage</b></p>
+                We'll store Prometheus data on AWS EBS as persistent storage, for that create we'll create storage class and persitent volument claim. We need to create 2 SC and PVC for 2 different component of Prometheus - Server and AlertManager. 
+                
+                <p><b>StorageClass - AlertManager</b></p>
+                <pre>
+                    <code>
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: prometheus-alertmanager
+provisioner: kubernetes.io/aws-ebs
+parameters:
+  type: gp2
+  fsType: ext4
+allowVolumeExpansion: true
+                    </code>
+                </pre>
+                <p><b>StorageClass - Server</b></p>
+                <pre>
+                    <code>
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: prometheus-server
+provisioner: kubernetes.io/aws-ebs
+parameters:
+  type: gp2
+  fsType: ext4
+allowVolumeExpansion: true
+                    </code>
+                </pre>
+                <p><b>Persistent Volume Claim - AlertManager</b></p>
+                <pre>
+                    <code>
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: prometheus-alertmanager
+  namespace: prometheus
+  labels:
+    app: prometheus-alertmanager
+spec:
+  storageClassName: prometheus-alertmanager
+  resources:
+    requests:
+      storage: 50Gi
+  accessModes:
+    - ReadWriteOnce
+                    </code>
+                </pre>
+                <p><b>Persistent Volume Claim - Server</b></p>
+                <pre>
+                    <code>
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: prometheus-server
+  namespace: prometheus
+  labels:
+    app: prometheus-server
+spec:
+  storageClassName: prometheus-server
+  resources:
+    requests:
+      storage: 50Gi
+  accessModes:
+    - ReadWriteOnce
+                    </code>
+                </pre>
+            </li>
+            <li>
+                <b>Install using Helm</b>
+                <p>In this command we've set few values like </p><code>namespace, service type, storageclass, PVC and its size as created in previous type </code>
+                    <pre>
+                        <code>
+helm install prometheus stable/prometheus \
+--namespace prometheus \
+--set alertmanager.persistentVolume.storageClass="prometheus-alertmanager",server.persistentVolume.storageClass="prometheus-server",alertmanager.persistentVolume.existingClaim="prometheus-alertmanager", server.persistentVolume.existingClaim="prometheus-server",server.service.type="LoadBalancer"
+                        </code>
+                    </pre>
+            </li>
+            <li>
+                <b>Verify the installation</b>
+                <pre>
+                    <code>
+helm list -n prometheus
+kubectl get sc -n prometheus
+kubectl get po -n prometheus
+kubectl get svc -n prometheus
+                    </code>
+                </pre>
+            </li>
+        </ul>
+
+    </div>
+</body>
+</head>
+
+</html>

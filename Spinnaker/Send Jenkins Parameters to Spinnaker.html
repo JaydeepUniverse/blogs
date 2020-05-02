@@ -1,0 +1,162 @@
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <style>
+        pre code {
+            background-color: #eee;
+            display: block;
+            padding-left: 10px;
+            color: #34495E;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            white-space: -moz-pre-wrap;
+            white-space: -pre-wrap;
+            white-space: -o-pre-wrap;
+            word-wrap: break-word;
+            line-height: 20px;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+
+        }
+
+        pre {
+            margin: 0px 0px;
+        }
+
+        code {
+            color: #4266EC;
+            padding: 2px 4px;
+            white-space: nowrap;
+            background-color: #f7f7f9;
+            border: 1px solid #e1e1e8;
+            white-space: pre-wrap;
+            white-space: -moz-pre-wrap;
+            white-space: -pre-wrap;
+            white-space: -o-pre-wrap;
+            word-wrap: break-word;
+        }
+
+        a {
+            color: #2b6dad
+        }
+
+        h4 {
+            font-weight: bold;
+        }
+
+        <style>table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        td,
+        th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+            color: #34495E;
+        }
+
+        tr:nth-child(even) {
+            background-color: #dddddd;
+        }
+
+        p {
+            color: #34495E;
+        }
+
+        li {
+            color: #34495E;
+        }
+
+        h4 {
+            color: #0BA3E5;
+        }
+    </style>
+
+<body>
+<div class="separator" style="clear: both; text-align: center;"><a href="https://4.bp.blogspot.com/-i9XEKJBAKOs/XqpK6ct2ewI/AAAAAAAAHbs/dv11BWXyQiUQ5GmV9N7KM5v964FA7TN_gCLcBGAsYHQ/s1600/Send%2BJenkins%2BParameters%2Bto%2BSpinnaker.JPG" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://4.bp.blogspot.com/-i9XEKJBAKOs/XqpK6ct2ewI/AAAAAAAAHbs/dv11BWXyQiUQ5GmV9N7KM5v964FA7TN_gCLcBGAsYHQ/s400/Send%2BJenkins%2BParameters%2Bto%2BSpinnaker.JPG" width="400" height="184" data-original-width="475" data-original-height="219" /></a></div>
+    <div class="w3-panel w3-flat-turquoise">
+
+        <h4>Prerequisite</h4>
+        <ul>
+            <li>Jenkins Installation - <a href="https://devopsautomationblogs.blogspot.com/2020/03/install-jenkins-on-aws-eks-using-helm.html" target="_blank">Refer my blog for Jenkins installation on AWS EKS using Helm</a></li>
+            <li>Spinnaker Installation - Refer their official website for installation document <a href="https://www.spinnaker.io/setup/" target="_blank">https://www.spinnaker.io/setup/</a></li>
+            <li>Jenkins-Spinnaker Integration - <a href="https://devopsautomationblogs.blogspot.com/2020/04/jenkins-spinnaker-integrations.html"></a>Refer my blog for integration setup between Jenkins and Spinnaker</li>
+            <p></p>
+        </ul>
+
+        <h4>Use-case example</h4>
+        <p>Using Spinnaker we're deploying application to kubernetes cluster. For this, we've written kubernetes manifests file in spinnaker pipeline stages with <code>namespace and version</code> of the application as variables. These values we might want from Jenkins for, namespace will be replaced by branch name of jenkins running the build and version will be replaced by version populated while running the build.</p>
+        <p>Example of such kubernetes manifest file</p>
+        <pre>
+            <code>
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: petclinic
+  namespace: 'petclinic-${trigger["properties"]["branch_name"]}'
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: petclinic
+      name: petclinic
+    spec:
+      containers:
+        - image: imageName:${trigger["properties"]["version"]}
+          name: petclinic
+            </code>
+        </pre>
+
+        <h4>Jenkins-Spinnaker Integration</h4>
+        <ul>
+            <li>
+                First we'll create properties file in Jenkins containing our required parameteres - namespace and vesion and we need to archive the file in order to send to spinnaker.
+                <p></p>
+                For this, I'm using jenkins pipeline type job, hence writing code in Jenkinsfile to create the properties file. 
+                <p></p>
+                <i>Here application verion is variable defined in Jenkinsfile, then using <code>mvn, jgitver</code> I'm populating version and storing it into version variable, hence I can use it then further in other stages, for example here for spinnaker propery purpose</i>
+                Below is the code for same
+                <p></p>
+                <pre>
+                    <code>
+stage("Send Parameters To Spinnaker"){
+    steps{
+        sh """
+echo "---
+branch_name: "${env.BRANCH_NAME}"
+version: "${version}"
+" > spinnaker_properties.yaml
+"""
+        archiveArtifacts artifacts: 'build_properties.yaml', fingerprint: true
+    }
+}                        
+                    </code>
+                </pre>
+            </li>
+            <li>
+                Now go to Spinnaker pipeline configuration > Automated trigger where we have integrated jenkins as per 3rd prerequisite > there in last option "Property File" - write down the name of the property file we created in previous step, which is on our case "spinnaker_properties.yaml" > save the configuration.
+                <p></p>
+            </li>
+            <li>
+                Now, we need to mention these properties variable in kubernetes manifest file as shown in above use-case example
+                <pre>
+                    <code>
+namespace: 'petclinic-${trigger["properties"]["branch_name"]}'
+
+image: imageName:${trigger["properties"]["version"]}
+                    </code>
+                </pre>
+            </li>
+        </ul>
+        <p>And our setup is ready!! Now whenever jenkins build job will run > it will capture branch name and version > archive this file > trigger the spinnaker pipeline and send propery file to spinnaker > and spinnaker will populate the value from this propery file wherever mentioned as variables.</p>
+
+    </div>
+</body>
+</head>
+
+</html>

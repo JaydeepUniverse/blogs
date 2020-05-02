@@ -1,0 +1,134 @@
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <style>
+        pre code {
+            background-color: #eee;
+            display: block;
+            padding-left: 10px;
+            color: #34495E;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            white-space: -moz-pre-wrap;
+            white-space: -pre-wrap;
+            white-space: -o-pre-wrap;
+            word-wrap: break-word;
+            line-height: 20px;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+
+        }
+
+        pre {
+            margin: 0px 0px;
+        }
+
+        code {
+            color: #4266EC;
+            padding: 2px 4px;
+            white-space: nowrap;
+            background-color: #f7f7f9;
+            border: 1px solid #e1e1e8;
+            white-space: pre-wrap;
+            white-space: -moz-pre-wrap;
+            white-space: -pre-wrap;
+            white-space: -o-pre-wrap;
+            word-wrap: break-word;
+        }
+
+        a {
+            color: #2b6dad
+        }
+
+        h4 {
+            font-weight: bold;
+        }
+
+        <style>table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        td,
+        th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+            color: #34495E;
+        }
+
+        tr:nth-child(even) {
+            background-color: #dddddd;
+        }
+
+        p {
+            color: #34495E;
+        }
+
+        li {
+            color: #34495E;
+        }
+
+        h4 {
+            color: #0BA3E5;
+        }
+    </style>
+
+<body>
+    <div class="w3-panel w3-flat-turquoise">
+        <h4>How to trigger spinnaker CD pipeline from Jenkins CI pipeline</h4>
+        <p>For this setup all configurations we would do using spinnaker halyard CLI</p>
+        <ul>
+            <li>
+                <b>Enable Jenkins Master</b>
+                <pre>
+                    <code>
+hal config ci jenkins enable
+                    </code>
+                </pre>
+            </li>
+            <li>
+                <b>Add Jenkins Master with any required name to Jenkins master list. Here I've used name "my-jenkins-master"</b>
+                <p>While running this command keep jenkins admin user token handy which is required to authentication</p>
+                <pre>
+                    <code>
+echo $APIKEY | hal config ci jenkins master add my-jenkins-master \
+    --address $BASEURL \
+    --username $USERNAME \
+    --password # api key will be read from STDIN to avoid appearing
+               # in your .bash_history                        
+                    </code>
+                </pre>
+            </li>
+            <li>
+                <b>To apply this change Re-deploy spinnaker</b>
+                <pre>
+                    <code>
+sudo hal deploy apply
+                    </code>
+                </pre>
+            </li>
+            <li>
+                <b>Add Jenkins trigger in pipeline</b>
+                <ul>
+                    <li>Create pipeline or In existing pipeline go to configurations</li>
+                    <li>
+                        Add trigger
+                        <p></p>
+                        Type: Jenkins<br>
+                        Master: This drop down would show above added jenkins master - "my-jenkins-master"<br>
+                        Job: This drop down would show all jobs from jenkins, select the one with spinnaker pipeline trigger want to associate<br>
+                        Property File: I'll write another blog for this, how to use this option, but it's optional hence can be left blank.
+                    </li>
+                </ul>
+                <p></p>
+            </li>
+            <li>Now, as soon jenkins job will be finished successful, spinnaker pipeline will be triggered automatically.</li>
+        </ul>
+    </div>
+</body>
+</head>
+
+</html>

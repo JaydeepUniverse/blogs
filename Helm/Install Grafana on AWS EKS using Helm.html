@@ -1,0 +1,141 @@
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <style>
+        pre code {
+            background-color: #eee;
+            display: block;
+            padding-left: 10px;
+            color: #34495E;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            white-space: -moz-pre-wrap;
+            white-space: -pre-wrap;
+            white-space: -o-pre-wrap;
+            word-wrap: break-word;
+            line-height: 20px;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+
+        }
+
+        pre {
+            margin: 0px 0px;
+        }
+
+        code {
+            color: #4266EC;
+            padding: 2px 4px;
+            white-space: nowrap;
+            background-color: #f7f7f9;
+            border: 1px solid #e1e1e8;
+            white-space: pre-wrap;
+            white-space: -moz-pre-wrap;
+            white-space: -pre-wrap;
+            white-space: -o-pre-wrap;
+            word-wrap: break-word;
+        }
+
+        a {
+            color: #2b6dad
+        }
+
+        h4 {
+            font-weight: bold;
+        }
+
+        table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        td,
+        th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+            color: #34495E;
+        }
+
+        tr:nth-child(even) {
+            background-color: #dddddd;
+        }
+
+        p {
+            color: #34495E;
+        }
+
+        li {
+            color: #34495E;
+        }
+
+        h4 {
+            color: #0BA3E5;
+        }
+
+    </style>
+
+<body>
+<div class="separator" style="clear: both; text-align: center;"><a href="https://1.bp.blogspot.com/-T-iuUmHXml0/XqZKcaYy4kI/AAAAAAAAHaU/k9NXDYqhOIMlhz705mWqDqszfksv6P9ugCLcBGAsYHQ/s1600/Install%2BGrafana%2Bon%2BAWS%2BEKS%2Busing%2BHelm.JPG" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://1.bp.blogspot.com/-T-iuUmHXml0/XqZKcaYy4kI/AAAAAAAAHaU/k9NXDYqhOIMlhz705mWqDqszfksv6P9ugCLcBGAsYHQ/s640/Install%2BGrafana%2Bon%2BAWS%2BEKS%2Busing%2BHelm.JPG" width="640" height="491" data-original-width="512" data-original-height="393" /></a></div>
+    <div class="w3-panel w3-flat-turquoise">
+        <ul>
+            <li>
+                Create namespace for Grafana
+                <p></p>
+                <pre>
+                    <code>
+kubectl create ns grafana
+                    </code>
+                </pre>
+            </li>
+            <li>
+                We'll store Grafana data on AWS EBS as persistent storage, hence for that create storage class
+                <p></p>
+                <pre>
+                    <code>
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: grafana
+provisioner: kubernetes.io/aws-ebs
+parameters:
+  type: gp2
+  fsType: ext4
+allowVolumeExpansion: true
+                    </code>
+                </pre>
+            </li>
+            <li>
+                Install using Helm - In this command we've set few values like <code>namespace, service type, storageclass and its size </code>
+                    <pre>
+                        <code>
+helm install grafana stable/grafana --namespace grafana --set service.type=LoadBalancer,persistence.enabled=true,persistence.type=pvc,persistence.size=100Gi,persistence.storageClassName=grafana,namespaceOverride=grafana
+                        </code>
+                    </pre>
+            </li>
+            <li>
+                Verify the installation
+                <pre>
+                    <code>
+helm list -n grafana
+kubectl get sc -n grafana
+kubectl get po -n grafana
+                    </code>
+                </pre>
+            </li>
+            <li>
+                UI Credentials:
+                <p></p>
+                Username: admin
+                <p></p>
+                Password:
+                <p><code>kubectl get secret --namespace grafana grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo</code></p>
+            </li>
+        </ul>
+    </div>
+</body>
+</head>
+
+</html>

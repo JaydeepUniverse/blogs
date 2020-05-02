@@ -1,0 +1,133 @@
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <style>
+        pre code {
+            background-color: #eee;
+            display: block;
+            padding-left: 10px;
+            color: black;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            white-space: -moz-pre-wrap;
+            white-space: -pre-wrap;
+            white-space: -o-pre-wrap;
+            word-wrap: break-word;
+            line-height: 20px;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+
+        }
+
+        pre {
+            margin: 0px 0px;
+        }
+
+        code {
+            color: #4266EC;
+            padding: 2px 4px;
+            white-space: nowrap;
+            background-color: #f7f7f9;
+            border: 1px solid #e1e1e8;
+            white-space: pre-wrap;
+            white-space: -moz-pre-wrap;
+            white-space: -pre-wrap;
+            white-space: -o-pre-wrap;
+            word-wrap: break-word;
+        }
+
+        a {
+            color: #2b6dad
+        }
+
+        h4 {
+            font-weight: bold;
+        }
+
+        <style>table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        td,
+        th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+            color: #34495E;
+        }
+
+        tr:nth-child(even) {
+            background-color: #dddddd;
+        }
+
+        p {
+            color: #34495E;
+        }
+
+        li {
+            color: #34495E;
+        }
+
+        h4 {
+            color: #0BA3E5;
+        }
+
+    </style>
+
+<body>
+<div class="separator" style="clear: both; text-align: center;"><a href="https://3.bp.blogspot.com/-Uaucw5mMHQE/XqWprSan8oI/AAAAAAAAHZ4/j136HgFSvRQ95wS3IAs3DfCXiR5HT4Y2ACLcBGAsYHQ/s1600/Install%2BInfluxDB%2Bon%2BAWS%2BEKS%2Busing%2BHelm.JPG" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://3.bp.blogspot.com/-Uaucw5mMHQE/XqWprSan8oI/AAAAAAAAHZ4/j136HgFSvRQ95wS3IAs3DfCXiR5HT4Y2ACLcBGAsYHQ/s640/Install%2BInfluxDB%2Bon%2BAWS%2BEKS%2Busing%2BHelm.JPG" width="640" height="533" data-original-width="501" data-original-height="417" /></a></div>
+    <div class="w3-panel w3-flat-turquoise">
+        <ul>
+            <li>
+                Create namespace for influxdb
+                <p></p>
+                <pre>
+                    <code>
+kubectl create ns influxdb
+                    </code>
+                </pre>
+            </li>
+            <li>
+                We'll store InfluxDB data on AWS EBS as persistent storage, hence for that create storage class
+                <p></p>
+                <pre>
+                    <code>
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: influxdb
+provisioner: kubernetes.io/aws-ebs
+parameters:
+  type: gp2
+  fsType: ext4
+allowVolumeExpansion: true
+                    </code>
+                </pre>
+            </li>
+            <li>
+                Install using Helm - In this command we've set few values like <code>namespace, service type, storageclass and its size </code>
+                    <pre>
+                        <code>
+helm install influxdb stable/influxdb --namespace influxdb --set service.type=LoadBalancer,persistence.enabled=true,persistence.storageClass=influxdb,persistence.size=100Gi
+                        </code>
+                    </pre>
+            </li>
+            <li>
+                Verify the installation
+                <pre>
+                    <code>
+helm list -n influxdb
+kubectl get sc -n influxdb
+kubectl get po -n influxdb
+                    </code>
+                </pre>
+            </li>
+        </ul>
+    </div>
+</body>
+</head>
+
+</html>

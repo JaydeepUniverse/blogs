@@ -1,0 +1,238 @@
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <style>
+        pre code {
+            background-color: #eee;
+            display: block;
+            padding-left: 10px;
+            color: #34495E;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            white-space: -moz-pre-wrap;
+            white-space: -pre-wrap;
+            white-space: -o-pre-wrap;
+            word-wrap: break-word;
+            line-height: 20px;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+
+        }
+
+        pre {
+            margin: 0px 0px;
+        }
+
+        code {
+            color: #4266EC;
+            padding: 2px 4px;
+            white-space: nowrap;
+            background-color: #f7f7f9;
+            border: 1px solid #e1e1e8;
+            white-space: pre-wrap;
+            white-space: -moz-pre-wrap;
+            white-space: -pre-wrap;
+            white-space: -o-pre-wrap;
+            word-wrap: break-word;
+        }
+
+        a {
+            color: #2b6dad
+        }
+
+        h4 {
+            font-weight: bold;
+        }
+
+        <style>table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        td,
+        th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+            color: #34495E;
+        }
+
+        tr:nth-child(even) {
+            background-color: #dddddd;
+        }
+
+        p {
+            color: #34495E;
+        }
+
+        li {
+            color: #34495E;
+        }
+
+        h4 {
+            color: #0BA3E5;
+        }
+    </style>
+
+<body>
+    <div class="w3-panel w3-flat-turquoise">
+        <ul>
+            <li>
+                <b>Install InfluxDB</b> - Here's the link for how to install influxdb on AWS EKS - <a
+                    href="https://devopsautomationblogs.blogspot.com/2020/04/install-influxdb-on-aws-eks-using-helm.html"
+                    target="_blank">https://devopsautomationblogs.blogspot.com/2020/04/install-influxdb-on-aws-eks-using-helm.html</a>
+                <p></p>
+            </li>
+            <li>
+                <b>Configure InfluxDB</b> for jenkins build metrics collection
+                <p></p>
+                Go inside the influxdb pod and Run below 2 commands
+                <pre>
+                    <code>
+kubectl exec -it -n influxdb influxdbPodName /bin/bash    
+
+influx                                                          # open influx database
+CREATE DATABASE jenkins_db                                      # create jenkins database
+CREATE USER jenkins WITH PASSWORD 'admin' WITH ALL PRIVILEGES   # create jenkins username
+                        </code>
+                </pre>
+            </li>
+            <li>
+                <b>Install Grafana</b> - Here's the link for how to install influxdb on AWS EKS - <a
+                    href="https://devopsautomationblogs.blogspot.com/2020/04/install-grafana-on-aws-eks-using-helm.html"
+                    target="_blank">https://devopsautomationblogs.blogspot.com/2020/04/install-grafana-on-aws-eks-using-helm.html</a>
+                <p></p>
+            </li>
+            <li>
+                <b>Configure Grafana</b>
+                <p></p>
+                <ol>
+                    <li>
+                        Add influxDB datasource
+                        <p></p>
+                        Click on Settings (left side) > Data Sources > Add data source > Search & Select "InfluxDB" >
+                        <br>
+                        Name: InfluxDB<br>
+                        HTTP > URL: InfluxDB URL - How to get <code>kubectl get svc -n influxdb</code><br>
+                        InfluxDB Details ><br>
+                        Database: jenkins_db<br>
+                        User: jenkins<br>
+                        Password: admin<br>
+                        HTTP Method: Get<br>
+                        Save & Test - This will test the connection and save the datasource.
+                        <p></p>
+                    </li>
+                    <li>
+                        Import already available jenkins grafana dashboard
+                        <p></p>
+                        Click on + sign (create) > Import > write id "10557" in "Grafana.com Dashboard" > it'll
+                        automatically load the dashboard:
+                        <br>
+                        Name: Choose or keep the name as is<br>
+                        Folder: Default will be created in General folder, however for our configuration create new named Jenkins<br>
+                        InfluxDB: Select the datasource added in previous step<br>
+                        Import
+                        <p></p>
+                    </li>
+                    <li>
+                        As per this dashboard's plugin usage, we need to install 2 plugins in grafana
+                        <p></p> 
+                        Go inside the Grafana pod, Run below 2 commands and Delete the pod to Restart the Grafana service. Data will be persisted because we've used AWS EBS in Grafana installation process.
+                        <pre>
+                            <code>
+kubectl exec -it -n grafana grafanaPodName /bin/bash    
+
+grafana-cli plugins install grafana-piechart-panel
+grafana-cli plugins install btplc-trend-box-panel
+exit
+
+kubectly delete po -n grafana grafanaPodName
+                                </code>
+                        </pre>
+                    </li>
+                    <li>
+                        In order to get the data from influxdb, we need to change the Query in dashboard configurations,
+                        For this<br>
+                        Home > Select the dashboard created in 2nd step > Click on "Dashboard Settings"(Top right side) > Variables > Delete any one variable from out of 2 there > In remaining one variable > Change
+                        the query to "select project_path from jenkins_data" > Save > Save Dashboard
+                        <p></p>
+                    </li>
+                    <li>
+                        <b>We need to change the query for all metrics panel on the dashboard, which I've already done. Copy entire json from <a href="https://github.com/JaydeepUniverse/automation/blob/master/grafanaJenkinsJSON.json" target="_blank">https://github.com/JaydeepUniverse/automation/blob/master/grafanaJenkinsJSON.json</a> and paste it in Home > Select the dashboard created in 2nd step > Click on "Dashboard Settings"(Top right side) > JSON Model > Save Dashboard</b>  
+                        <p></p>
+                    </li>
+                </ol>
+            </li>
+            <li><b>Configure Jenkins</b></li>
+            <p></p>
+            <ol>
+                <li>Install Plugin - InfluxDB and Restart Jenkins</li>
+                <p></p>
+                <li>
+                    Manage Jenkins > Configure System > Search for InfluxDB > Add Target >
+                    <p></p>
+                    Description: influxdb-monitoring - This name we will going to use to send the build metrics to
+                    InfluxDB<br>
+                    URL: InfluxDB URL - How to get <code>kubectl get svc -n influxdb</code><br>
+                    Username: jenkins<br>
+                    Password: admin<br>
+                    Database: jenkins_db<br>
+                    Apply & Save the configurations
+                </li>
+                <p></p>
+                <li>Configure job to use this configuration</li>
+                <p></p>
+                <ul>
+                    <li>
+                        <b>FreeStyle Job</b> > Cofigure > Add Post-Build action > select "Publish build data to
+                        InfluxDB" > there provide Description name configured in previous step - "influxdb-monitoring" >
+                        save the configuration<br>
+                        Next time when job will run it will send the data to influxdb
+                        <p></p>
+                    </li>
+                    <li>
+                        <b>Declarative Pipeline Job</b> - Add below syntax in Jenkinsfile
+                        <pre>
+                             <code>
+post{
+    always{
+        script{
+            try {
+                if (currentBuild.result == null) {
+                    currentBuild.result = 'SUCCESS'
+                }
+            } catch (err) {
+                if (currentBuild.result == null) {
+                    currentBuild.result = 'FAILURE'
+                }
+                throw err
+            } finally {
+                influxDbPublisher selectedTarget: 'influxdb-monitoring'
+            }
+        }
+    }
+}                            
+                             </code>
+                         </pre>
+                         Next time when job will run it will send the data to influxdb
+                         <p></p>
+                    </li>
+                </ul>
+            </ol>
+            <li>
+                Voila!! Go to Grafana UI, Check for the metrics and Dashboard visualization.
+                <p></p>
+                This dashboard is really eye catchy!!
+            </li>
+        </ul>
+        <p>Below are screenshot taken from Grafana dashboard.</p>
+<div class="separator" style="clear: both; text-align: center;"><a href="https://2.bp.blogspot.com/-OO0VliiBK6M/XqerCsuzVEI/AAAAAAAAHa8/FFzPREiNKcAHy0LYflZtWCArHQRgwJI-gCLcBGAsYHQ/s1600/grafanaDashboard-1.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://2.bp.blogspot.com/-OO0VliiBK6M/XqerCsuzVEI/AAAAAAAAHa8/FFzPREiNKcAHy0LYflZtWCArHQRgwJI-gCLcBGAsYHQ/s640/grafanaDashboard-1.png" width="640" height="262" data-original-width="1291" data-original-height="528" /></a></div>
+<div class="separator" style="clear: both; text-align: center;"><a href="https://1.bp.blogspot.com/-5IW77DmY7Q4/XqerJFWPu3I/AAAAAAAAHbA/_lEvegpZ6pAZ0L7gjvHsabO-WTfkG2kjACLcBGAsYHQ/s1600/grafanaDashboard-2.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://1.bp.blogspot.com/-5IW77DmY7Q4/XqerJFWPu3I/AAAAAAAAHbA/_lEvegpZ6pAZ0L7gjvHsabO-WTfkG2kjACLcBGAsYHQ/s640/grafanaDashboard-2.png" width="640" height="220" data-original-width="1284" data-original-height="441" /></a></div>
+<div class="separator" style="clear: both; text-align: center;"><a href="https://2.bp.blogspot.com/-DsJb1i_umzo/XqerTH1XxpI/AAAAAAAAHbI/F2iQufzlstgjGSPWFiM7A6q8SOSwj45WQCLcBGAsYHQ/s1600/grafanaDashboard-3.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://2.bp.blogspot.com/-DsJb1i_umzo/XqerTH1XxpI/AAAAAAAAHbI/F2iQufzlstgjGSPWFiM7A6q8SOSwj45WQCLcBGAsYHQ/s640/grafanaDashboard-3.png" width="640" height="283" data-original-width="1254" data-original-height="555" /></a></div>
+    </div>
+</body>
+</head>
+
+</html>

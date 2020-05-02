@@ -1,0 +1,94 @@
+<html>
+    <head>
+        <meta name="viewport"content="width=device-width, initial-scale=1">
+        <link rel="stylesheet"href="https://www.w3schools.com/w3css/4/w3.css">
+        <style>
+            pre code {
+                    background-color: #eee;
+                    display: block;
+                    padding-left: 10px;
+                    color: black;
+                    overflow-x: auto;
+                    white-space: pre-wrap;
+                    white-space: -moz-pre-wrap;
+                    white-space: -pre-wrap;
+                    white-space: -o-pre-wrap;
+                    word-wrap: break-word;
+                    line-height: 20px;
+                    font-family: Verdana, Geneva, Tahoma, sans-serif;
+                    
+                }
+            pre {
+                margin: 0px 0px;
+            }
+            code {color: blue;}
+        </style>
+        <body>
+    <div class="separator" style="clear: both; text-align: center;"><a href="https://4.bp.blogspot.com/-d558G1qJwlE/Xn3mO4lKJOI/AAAAAAAAG8U/1WbnSXRmY6UUJT1651C7Kf_cNqx9dTsvACLcBGAsYHQ/s1600/Install%2BJenkins%2Bon%2BAWS%2BEKS%2Busing%2BHelm.jpg" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://4.bp.blogspot.com/-d558G1qJwlE/Xn3mO4lKJOI/AAAAAAAAG8U/1WbnSXRmY6UUJT1651C7Kf_cNqx9dTsvACLcBGAsYHQ/s400/Install%2BJenkins%2Bon%2BAWS%2BEKS%2Busing%2BHelm.jpg" width="400" height="282" data-original-width="541" data-original-height="381" /></a></div>
+            <div class="w3-panel w3-flat-turquoise">
+                <h4>Prerequisites</h4> 
+                <ul>
+                    <li>Create namespace for jenkins</li>
+                    <pre>
+                        <code>
+    kubectl create ns jenkins
+                        </code>
+                    </pre>
+                    </li>
+                    <li>We'll store jenkins data on AWS EBS as persistent storage hence for that</li>
+                        <ul>
+                            <li>Create storage class</li>
+                            <pre>
+                                <code>
+    apiVersion: storage.k8s.io/v1
+    kind: StorageClass
+    metadata:
+      name: jenkins-sc
+    provisioner: kubernetes.io/aws-ebs
+    parameters:
+      type: gp2
+      fsType: ext4   
+                                </code>
+                            </pre>
+                            <li>Create persistent volume claim</li>
+                            <pre>
+                                <code>
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      name: jenkins-pvc
+      namespace: devops-tools
+    spec:
+      storageClassName: jenkins-sc
+      resources:
+        requests:
+          storage: 50Gi
+      accessModes:
+        - ReadWriteOnce  
+                                </code>
+                            </pre>
+                        </ul> 
+                    <li>Install using Helm - In this command we've set few values like <code>namespace, pvc, sc - as created in intial steps; service type, jenkins master and slave resource requests and limit for fine grained usage of all resources under EKS</code></li>
+                    <pre>
+                        <code>
+    helm install ng-jenkins stable/jenkins --set namespaceOverride=jenkins,master.serviceType=LoadBalancer,master.slaveKubernetesNamespace=jenkins,master.resources.requests.cpu=500m,master.resources.requests.memory=1Gi,master.resources.limits.cpu=500m,master.resources.limits.memory=1Gi,persistence.existingClaim=jenkins-pvc,persistence.storageClass=jenkins-sc,master.adminPassword=admin           
+                        </code>
+                    </pre>
+                </ul>
+    
+            <h4>How to check</h4>
+            <pre>
+                <code>
+    kubectl get sc -n jenkins
+    kubectl get pvc -n jenkins
+    kubectl get pv -n jenkins
+    helm list -n jenkins
+    kubectl get po -n jenkins
+    kubectl get pvc -n jenkins
+                </code>
+            </pre>
+            </div>
+        </body>
+    </head>
+        </html>
+    
