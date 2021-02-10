@@ -1,0 +1,157 @@
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <style>
+        pre code {
+            background-color: #eee;
+            display: block;
+            padding-left: 10px;
+            color: #34495E;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            white-space: -moz-pre-wrap;
+            white-space: -pre-wrap;
+            white-space: -o-pre-wrap;
+            word-wrap: break-word;
+            line-height: 20px;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+
+        }
+
+        pre {
+            margin: 0px 0px;
+        }
+
+        code {
+            color: #4266EC;
+            padding: 2px 4px;
+            white-space: nowrap;
+            background-color: #f7f7f9;
+            border: 1px solid #e1e1e8;
+            white-space: pre-wrap;
+            white-space: -moz-pre-wrap;
+            white-space: -pre-wrap;
+            white-space: -o-pre-wrap;
+            word-wrap: break-word;
+        }
+
+        a {
+            color: #2b6dad
+        }
+
+        h4 {
+            font-weight: bold;
+        }
+
+        <style>table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        td,
+        th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+            color: #34495E;
+        }
+
+        tr:nth-child(even) {
+            background-color: #dddddd;
+        }
+
+        p {
+            color: #34495E;
+        }
+
+        li {
+            color: #34495E;
+        }
+
+        h4 {
+            color: #0BA3E5;
+        }
+    </style>
+
+<body>
+<div class="separator" style="clear: both; text-align: center;"><a href="https://1.bp.blogspot.com/-z95-MtAYxbQ/XqzxqhCynpI/AAAAAAAAHc8/41wRbE8STrc_ildNnyH2fZaOp5bRKChKwCLcBGAsYHQ/s1600/How%2Bto%2Bcreate%2BService%2Btype%2BLoadBalancer%2Bwith%2Bprivate%2Bip%2Baddress%2Bfrom%2Bassigned%2Bvnet-subnet.JPG" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://1.bp.blogspot.com/-z95-MtAYxbQ/XqzxqhCynpI/AAAAAAAAHc8/41wRbE8STrc_ildNnyH2fZaOp5bRKChKwCLcBGAsYHQ/s400/How%2Bto%2Bcreate%2BService%2Btype%2BLoadBalancer%2Bwith%2Bprivate%2Bip%2Baddress%2Bfrom%2Bassigned%2Bvnet-subnet.JPG" width="400" height="216" data-original-width="414" data-original-height="224" /></a></div>
+    <div class="w3-panel w3-flat-turquoise">
+        <h4>Use-case - To expose the service within virtual network as Internal LoadBalancer</h4>
+        
+        <p>By default, when we create service type LoadBalancer without customized annotations in AKS(Azure Kubernetes Service), then AKS will create Load Balancer with <b>Public IP</b> attached to it, through which application can be accessible to internet world.</p>
+        
+        <p>However, it is possible that we may need to create service to be exposed within virtual network only, however with service type Load Balancer.</p>
+        
+        <p>For this, we need to add <code>service.beta.kubernetes.io/azure-load-balancer-internal: "true"</code> in <code>annotations</code> in kubernetes service manifest file.</p>
+        
+        <h4>Create an Internal LoadBalancer</h4>
+        <pre>
+            <code>
+apiVersion: v1
+kind: Service
+metadata:
+  name: nameOfService
+  annotations:
+    service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 8080
+    targetPort: 8080
+  selector:
+    app: nameOfApplication               
+            </code>
+        </pre>
+
+        <h4>Define particular private ip address</h4>
+        <p>For this, we need to add <code>loadBalancerIP</code> in <code>spec</code> with required IP address from the same subnet of AKS.</p>
+        <p>Ex.</p>
+        <pre>
+            <code>
+apiVersion: v1
+kind: Service
+metadata:
+  name: nameOfService
+  annotations:
+    service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+spec:
+  type: LoadBalancer
+  loadBalancerIP: 10.10.10.10
+  ports:
+  - port: 8080
+    targetPort: 8080
+  selector:
+    app: nameOfApplication                 
+            </code>
+        </pre>
+
+        <h4>Define particular subnet</h4>
+        <p>For this, we need to add <code>service.beta.kubernetes.io/azure-load-balancer-internal-subnet: "subnetName"</code> in <code>annotations</code></p>
+        <p>Ex.</p>
+        <pre>
+            <code>
+apiVersion: v1
+kind: Service
+metadata:
+  name: nameOfService
+  annotations:
+    service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+    service.beta.kubernetes.io/azure-load-balancer-internal-subnet: "subnetName"
+spec:
+  type: LoadBalancer
+  loadBalancerIP: 10.10.10.10
+  ports:
+  - port: 8080
+    targetPort: 8080
+  selector:
+    app: nameOfApplication                  
+            </code>
+        </pre>
+    </div>
+</body>
+</head>
+
+</html>
